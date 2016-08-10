@@ -3,7 +3,9 @@ from booksdir.serializers import BooksSerializer, AuthorSerializer, PublisherSer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from ratelimit.decorators import ratelimit
 
+@ratelimit(key='ip', rate='10/m', block=True)
 @api_view(['GET'])
 def book_list(request, format=None):
 	if request.method == 'GET':
@@ -13,6 +15,7 @@ def book_list(request, format=None):
 	else:
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@ratelimit(key='ip', rate='10/m', block=True)
 @api_view(['POST'])
 def book_add(request, format=None):
 	if request.method == 'POST':
@@ -22,6 +25,7 @@ def book_add(request, format=None):
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@ratelimit(key='ip', rate='10/m', block=True)
 @api_view(['GET'])
 def book_details(request, pk, format=None):
 	try:
